@@ -4,16 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/styles.css">
     <title>Star Citizen Route Calculator</title>
 </head>
-<body>
-    <p id="date"></p>
-    <form id="myForm">
-        <select onchange="onSelect()" id="planetsList"></select>
-        <select id="locationList"></select>
-    </form>
-    <button onclick="onClick()" id="calculate">calc</button>
-    <textarea id="resultArea"></textarea>
+<body id="body">
+    <nav id="navbar">
+        <h4 id=title>Route Calculator</h4>
+    </nav>
+    <div id="resultBox">
+        <h1 id= "resultBoxTitleHeader">Calculated route</h1>
+        <textarea id="resultTextArea" readonly></textarea>
+    </div>
+    <div id="inputBox">
+        <div id="inputBoxTitle">
+            <h3 id="inputBoxTitleHeader">Calculation Inputs</h3>
+        </div>
+        <form id="myForm">
+            <select class="select" id="SystemList"><option>Stanton</option></select>
+            <select class="select" onchange="onSelect()" id="planetsList">
+                <option disabled selected value>Select planet / moon</option>
+            </select>
+            <select class="select" id="locationList">
+                <option disabled selected value>Select location</option>
+            </select>     
+        </form>
+        
+        
+        <input id="coordinateField" type="text">
+        <button class="button" onclick="onClick()" id="calculate">Calculate</button>
+    </div>
+
+
    
 </body>
 <script src="javascript/index.js"></script>

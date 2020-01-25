@@ -397,7 +397,7 @@ function distancesToPoint(planet, OMP){
 }
 
 
-function resultToString(result){
+function resultToString(planet, target, result){
     let startPoint = "OM" + (result[0]+1);
     let firstTarget = "OM" + (result[1]+1);
     let secondTarget = "OM" + (result[2]+1);
@@ -415,8 +415,8 @@ function resultToString(result){
     let distanceUntilTarget = result[6];
     distanceUntilTarget = Math.round(distanceUntilTarget * 100) / 100;
 
-    return "StartPoint: " + startPoint + "\nTowards " + firstTarget + " until " + distanceUntilFirstTurn + "km away" + 
-    "\nTowards " + secondTarget + " until " + distanceUntilSecondTurn + "km away" + "\nTowards " + thirdTarget + " until " + distanceUntilTarget + "km away";
+    return planet.name + " -> " + target.name + "\n\nStartPoint: " + startPoint + "\nFly towards " + firstTarget + " until " + distanceUntilFirstTurn + " km away" + 
+    "\nFly towards " + secondTarget + " until " + distanceUntilSecondTurn + " km away" + "\nFly towards " + thirdTarget + " until " + distanceUntilTarget + " km away";
 }
 
 
@@ -441,13 +441,14 @@ function findPlanet(n){
 }
 
 function setUpData(){
-    planets.push(new Planet("Cellin", 260, 410));
+    planets.push(new Planet("Cellin", 260, 380));
     planets.push(new Planet("Daymar", 295, 430));
-    planets.push(new Planet("Temp", 0, 0));
+    planets.push(new Planet());
+
 
     var OMD = [];
-    OMD.push({planetname : "Cellin", locationname : "temp1", OM1 :232.8, OM2 : 646.4, OM3 : 389.7, OM4 : 565.9, OM5 : 557.1, OM6 : 402.1});
-    OMD.push({planetname : "Cellin", locationname : "temp2", OM1 :232.8, OM2 : 646.4, OM3 : 389.7, OM4 : 565.9, OM5 : 557.1, OM6 : 402.1});
+    //OMD.push({planetname : "Cellin", locationname : "temp1", OM1 :232.8, OM2 : 646.4, OM3 : 389.7, OM4 : 565.9, OM5 : 557.1, OM6 : 402.1});
+    //OMD.push({planetname : "Cellin", locationname : "temp2", OM1 :232.8, OM2 : 646.4, OM3 : 389.7, OM4 : 565.9, OM5 : 557.1, OM6 : 402.1});
     //OMD.push("Cellin", "temp3", 641.0, 121.0, 449.8, 472.4, 460.1, 462.4);
     console.log(OMD.length);
 
@@ -468,11 +469,19 @@ function addData(){
 
 setUpData();
 
-var daymar_old = new Planet("daymar_old", 295, 464.624)
-var OMP = [606.6, 487.9, 233.2, 742.7, 455.1, 631.6];
+var daymar_old = new Planet("daymar_old", 295, 464.624);
+var cellin_old = new Planet("cellin_old", 260, 410.024);
+var OMP_Javelin = [606.6, 487.9, 233.2, 742.7, 455.1, 631.6];
+var OMP_Freelancer = [620.7, 294.7, 251.0, 590.7, 364.2];
+var OMP_Starfarer = [379.6, 680.0, 296.6, 720.1, 604.0, 491.6];
+var OMP_Junkyard = [375.6, 682.5, 672.4, 393.4, 684.4, 372.4];
+var OMP_AbandonedOutpost = [359.4, 585.3, 258.9, 636.2, 400.7, 557.9];
 
-findPlanet("Daymar").addLocation("Javelin wreck", distancesToPoint(daymar_old, OMP));
-
+findPlanet("Daymar").addLocation("Javelin wreck", distancesToPoint(daymar_old, OMP_Javelin));
+//findPlanet("Cellin").addLocation("Freelancer wreck", distancesToPoint(cellin_old, OMP_Freelancer));
+findPlanet("Cellin").addLocation("Abandoned outpost", distancesToPoint(cellin_old, OMP_AbandonedOutpost));
+//findPlanet("Daymar").addLocation("Starfarer wreck", distancesToPoint(daymar_old, OMP_Starfarer));
+findPlanet("Daymar").addLocation("Junkyard", distancesToPoint(daymar_old, OMP_Junkyard));
 
 let selectPlanets = document.getElementById("planetsList");
 
@@ -508,16 +517,14 @@ function onSelect(){
 }
 
 function onClick(){
-    console.log("test");
     let selectLocations = document.getElementById("locationList");
     let selectPlanets = document.getElementById("planetsList");
 
     let planet = findPlanet(selectPlanets.options[selectPlanets.selectedIndex].value)
     let target = planet.getLocation(selectLocations.options[selectLocations.selectedIndex].value);
     var result = calculateRoute(target, planet);
-    console.log(resultToString(result));
 
-    document.getElementById("resultArea").value = resultToString(result);
+    document.getElementById("resultTextArea").value = resultToString(planet, target, result);
 }
 
 //console.log(selectPlanetsResult);

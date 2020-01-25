@@ -1,3 +1,4 @@
+planets = [];
 
 class Point{
     constructor(x,y,z){
@@ -420,9 +421,16 @@ function resultToString(result){
 
 
 
-planets = [];
-point = new Point(1,2,3);
-point2 = new Point(2,3,4);
+
+
+
+
+
+
+
+
+
+
 
 function findPlanet(n){
     for(let i = 0; i < planets.length; i++){
@@ -432,23 +440,38 @@ function findPlanet(n){
     }
 }
 
-point3 = point.bArePointsEqual(point2);
+function setUpData(){
+    planets.push(new Planet("Cellin", 260, 410));
+    planets.push(new Planet("Daymar", 295, 430));
+    planets.push(new Planet("Temp", 0, 0));
 
-//var OMP = [232.8, 646.4, 389.7, 565.9, 557.1, 402.1]; 
-//var OMP = [490.9, 429.5, 639.6, 128.1, 458.9, 463.6];
-//var OMP = [641.0, 121.0, 449.8, 472.4, 460.1, 462.4];
+    var OMD = [];
+    OMD.push({planetname : "Cellin", locationname : "temp1", OM1 :232.8, OM2 : 646.4, OM3 : 389.7, OM4 : 565.9, OM5 : 557.1, OM6 : 402.1});
+    OMD.push({planetname : "Cellin", locationname : "temp2", OM1 :232.8, OM2 : 646.4, OM3 : 389.7, OM4 : 565.9, OM5 : 557.1, OM6 : 402.1});
+    //OMD.push("Cellin", "temp3", 641.0, 121.0, 449.8, 472.4, 460.1, 462.4);
+    console.log(OMD.length);
 
+    for(let i = 0; i < OMD.length; i++){
+        let planet = findPlanet(OMD[i].planetname);
+        let targetName = OMD[i].locationname;
+        let distances = [OMD[i].OM1, OMD[i].OM2, OMD[i].OM3, OMD[i].OM4, OMD[i].OM5, OMD[i].OM6];
+        planet.addLocation(targetName, distancesToPoint(planet, distances));
+    }
+}
 
-planets.push(new Planet("Cellin", 260, 380));
-planets.push(new Planet("Daymar", 295, 430));
-planets.push(new Planet("Temp", 0, 0));
+function addData(){
+    let planet;
+    let location;
+    let distances;
+    planet.addLocation(location, distancesToPoint(planet, distances));
+}
+
+setUpData();
 
 var daymar_old = new Planet("daymar_old", 295, 464.624)
 var OMP = [606.6, 487.9, 233.2, 742.7, 455.1, 631.6];
 
 findPlanet("Daymar").addLocation("Javelin wreck", distancesToPoint(daymar_old, OMP));
-findPlanet("Cellin").addLocation("Location1", new Point(0,4,0));
-findPlanet("Cellin").addLocation("Location2", new Point(0,0,4));
 
 
 let selectPlanets = document.getElementById("planetsList");
@@ -460,6 +483,8 @@ for(let i = 0; i < planets.length; i++){
     el.value = opt.name;
     selectPlanets.appendChild(el);
 }
+
+
 
 function removeAllSelection(select){
     for(i = select.options.length - 1 ; i >= 0 ; i--)

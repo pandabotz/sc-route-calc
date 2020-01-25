@@ -7,6 +7,14 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>sc-calc-barebones</h1>
+    <p id="date"></p>
+    <form id="myForm">
+        <select onchange="onSelect()" id="planetsList"></select>
+        <select id="locationList"></select>
+    </form>
+    <button onclick="onClick()" id="calculate">calc</button>
+    <textarea id="resultArea"></textarea>
+   
 </body>
+<script src="javascript/index.js"></script>
 </html>

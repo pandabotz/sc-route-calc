@@ -445,33 +445,55 @@ function findPlanet(n){
 function setUpData(){
     planets.push(new Planet("Cellin", 260, 380));
     planets.push(new Planet("Daymar", 295, 430));
-    planets.push(new Planet("Yela", 313, 493));
-    planets.push(new Planet("Hurston", 1000, 0));
-    planets.push(new Planet("Arial", 344.494, 0));
-    planets.push(new Planet("Aberdeen", 274, 0));
-    planets.push(new Planet("Magda", 340.826, 0));
-    planets.push(new Planet("Ita", 325, 0));
-    planets.push(new Planet("Arccorp", 800, 0));
-    planets.push(new Planet("Lyria", 223, 0));
-    planets.push(new Planet("Wala", 283, 0));
+    planets.push(new Planet("Yela", 313, 454));
+    planets.push(new Planet("Hurston", 1000, 1575)); //Update
+    planets.push(new Planet("Arial", 344.494, 501));
+    planets.push(new Planet("Aberdeen", 274, 402.7));
+    planets.push(new Planet("Magda", 340.826, 494.8));
+    planets.push(new Planet("Ita", 325, 472.4));
+    planets.push(new Planet("Arccorp", 800, 1151)); //Update
+    planets.push(new Planet("Lyria", 223, 328.2));
+    planets.push(new Planet("Wala", 283, 413));
     planets.push(new Planet("Microtech", 1000, 1439));
-    planets.push(new Planet("Delamar", 75, 0));
+    planets.push(new Planet("Delamar", 75, 118.9));
 
 
+    var OMD = [];
+    OMD.push({planetname: "Yela", locationname: "Stash house", OM1: 318.2, OM2: 714.1, OM3: 610.9, OM4: 487.8, OM5: 702.1, OM6: 343.8});
 
+    var daymar_old = new Planet("daymar_old", 295, 464.624);
+    var OMP_Javelin = [606.6, 487.9, 233.2, 742.7, 455.1, 631.6];
 
+    findPlanet("Daymar").addLocation("Javelin wreck", distancesToPoint(daymar_old, OMP_Javelin));
 
-    /*var OMD = [];
-    OMD.push({planetname : "Cellin", locationname : "temp1", OM1 :232.8, OM2 : 646.4, OM3 : 389.7, OM4 : 565.9, OM5 : 557.1, OM6 : 402.1});
-    OMD.push({planetname : "Cellin", locationname : "temp2", OM1 :232.8, OM2 : 646.4, OM3 : 389.7, OM4 : 565.9, OM5 : 557.1, OM6 : 402.1});
-    OMD.push("Cellin", "temp3", 641.0, 121.0, 449.8, 472.4, 460.1, 462.4);
 
     for(let i = 0; i < OMD.length; i++){
         let planet = findPlanet(OMD[i].planetname);
         let targetName = OMD[i].locationname;
         let distances = [OMD[i].OM1, OMD[i].OM2, OMD[i].OM3, OMD[i].OM4, OMD[i].OM5, OMD[i].OM6];
         planet.addLocation(targetName, distancesToPoint(planet, distances));
-    }*/
+    }
+
+
+
+    let selectPlanet = document.getElementById("planet-list");
+    for(let i = 0; i < planets.length; i++){
+        let opt = planets[i];
+        let el = document.createElement("option");
+        el.textContent = opt.name;
+        el.value = opt.name;
+        selectPlanet.appendChild(el);
+        
+    }
+
+    selectPlanet = document.getElementById("convert-planet-list");
+    for(let i = 0; i < planets.length; i++){
+        let opt = planets[i];
+        let el = document.createElement("option");
+        el.textContent = opt.name;
+        el.value = opt.name;
+        selectPlanet.appendChild(el);
+    }
 }
 
 function addData(){
@@ -481,34 +503,11 @@ function addData(){
     planet.addLocation(location, distancesToPoint(planet, distances));
 }
 
-setUpData();
-
-var daymar_old = new Planet("daymar_old", 295, 464.624);
-var cellin_old = new Planet("cellin_old", 260, 410.024);
-var OMP_Javelin = [606.6, 487.9, 233.2, 742.7, 455.1, 631.6];
-
-findPlanet("Daymar").addLocation("Javelin wreck", distancesToPoint(daymar_old, OMP_Javelin));
-
-let selectPlanet = document.getElementById("planet-list");
 
 
-for(let i = 0; i < planets.length; i++){
-    let opt = planets[i];
-    let el = document.createElement("option");
-    el.textContent = opt.name;
-    el.value = opt.name;
-    selectPlanet.appendChild(el);
-    
-}
 
-selectPlanet = document.getElementById("convert-planet-list");
-for(let i = 0; i < planets.length; i++){
-    let opt = planets[i];
-    let el = document.createElement("option");
-    el.textContent = opt.name;
-    el.value = opt.name;
-    selectPlanet.appendChild(el);
-}
+
+
 
 
 
@@ -562,7 +561,10 @@ function onClickCalculate(){
     let selectLocations = document.getElementById("location-list");
     if(selectPlanets.value == ""){
             document.getElementById("output-text-area").value = "Please select planet!";
+    } else if(selectPlanets.value == "Hurston" || selectPlanets.value == "Arccorp"){
+            document.getElementById("output-text-area").value = "Hurston and Arccorp are currently bugged, so the OM's altitude cant be measured. Please choose a different planet!";
     } else {
+        console.log("test");
         if(!checkbox.checked){       
             if(selectLocations.value == ""){
                 document.getElementById("output-text-area").value = "Please select location!";
@@ -596,6 +598,8 @@ function onClickConvert(){
     
     if(document.getElementById("convert-planet-list").value == ""){
         document.getElementById("output-text-area").value = "Please select a planet!";
+    } else if(document.getElementById("convert-planet-list").value == "Hurston" || document.getElementById("convert-planet-list").value == "Arccorp"){
+        document.getElementById("output-text-area").value = "Hurston and Arccorp are currently bugged, so the OM's altitude cant be measured. Please choose a different planet!";
     } else {
         let planet = findPlanet(document.getElementById("convert-planet-list").value);
         let om1 = document.getElementById("om1").value;
@@ -648,3 +652,6 @@ function checkBoxChange(){
     
 }
 
+
+
+setUpData();

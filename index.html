@@ -7,35 +7,102 @@
     <link rel="stylesheet" href="css/styles.css">
     <title>Star Citizen Route Calculator</title>
 </head>
-<body id="body">
-    <nav id="navbar">
-        <h4 id=title>Route Calculator</h4>
-    </nav>
-    <div id="resultBox">
-        <h1 id= "resultBoxTitleHeader">Calculated route</h1>
-        <textarea id="resultTextArea" readonly></textarea>
-    </div>
-    <div id="inputBox">
-        <div id="inputBoxTitle">
-            <h3 id="inputBoxTitleHeader">Calculation Inputs</h3>
+<body class="body">
+    <div class="site">
+        <div class="nav">
+            <h2 class="title">Route Calculator</h2>
+            <h5 class="current-version">3.8.1-LIVE.4222088</h5>
         </div>
-        <form id="myForm">
-            <select class="select" id="SystemList"><option>Stanton</option></select>
-            <select class="select" onchange="onSelect()" id="planetsList">
-                <option disabled selected value>Select planet / moon</option>
-            </select>
-            <select class="select" id="locationList">
-                <option disabled selected value>Select location</option>
-            </select>     
-        </form>
-        
-        
-        <input id="coordinateField" type="text">
-        <button class="button" onclick="onClick()" id="calculate">Calculate</button>
+        <div class="main">
+            <div class="input">
+                <div class="lable-input-container">
+                    <label for=system-list>System</label for=system-list>
+                    <select class="list-selection" id="system-list">
+                        <option>Stanton</option>
+                    </select>
+                </div>
+                <div class="lable-input-container">
+                    <label for="planet-list">Planet</label>
+                    <select class="list-selection" id="planet-list"  onchange="onSelect()">
+                        <option selected disabled></option selected disabled>
+                    </select>
+                </div>
+                <div class="lable-input-container">
+                    <label for="location-list">Location</label>
+                    <select class="list-selection" id="location-list" onchange="onLocationListChange()">
+                        <option selected disabled></option selected disabled>
+                    </select>
+                </div>
+                <div class="lable-input-container">
+                    <label>Ship</label>
+                    <input class="text-input" type="text" placeholder="-- not working yet --"disabled>
+                </div>
+                <div class="lable-input-container">
+                    <label>Jump drive</label>
+                    <input class="text-input" type="text" placeholder="-- not working yet --" disabled>
+                </div>
+                <button class="button" id="calculate-button" onclick="onClickCalculate()">Calculate</button>
+                <div class="coordinates">
+                    <div class="lable-input-container" id="coord-calc-container">
+                        <label>Coordinates</label>
+                        <input class="coord-input" id="coordx" type="number"readonly>
+                    </div>
+                    <input class="coord-input" id="coordy" type="number"readonly>
+                    <input class="coord-input" id="coordz" type="number"readonly>
+                    
+                    <div class="lable-input-container" id="checkbox-container">   
+                        <input class="checkbox" type="checkbox" id="checkbox" onchange="checkBoxChange()">
+                        <label>use coordinates</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="convert">
+                <div class="convert-title">
+                    <h2 id="convert-title-header">Convert distances</h2>
+                </div>
+                <div class="convert-left">
+                    <label>OM distances</label>
+                    <input class="om-input" id="om1" type=number placeholder="OM-1">
+                    <input class="om-input" id="om2" type=number placeholder="OM-2">
+                    <input class="om-input" id="om3" type=number placeholder="OM-3">
+                    <input class="om-input" id="om4" type=number placeholder="OM-4">
+                    <input class="om-input" id="om5" type=number placeholder="OM-5">
+                    <input class="om-input" id="om6" type=number placeholder="OM-6">
+                </div>
+                <div class="convert-right">
+                    <div class="lable-input-container">
+                        <label for="convert-system-list">System</label>
+                        <select class="list-selection" id="convert-system-list">
+                            <option>Stanton</option>
+                        </select>
+                    </div>
+                    <div class="lable-input-container">
+                        <label for="convert-planet-list">Planet</label>
+                        <select class="list-selection" id="convert-planet-list">
+                            <option selected disabled></option selected disabled>
+                        </select>
+                    </div>
+                    <button class="button" id="convert-button" onclick="onClickConvert()">Convert</button>
+                </div>
+                
+            </div>
+
+            <div class="output">
+                <div class="hrdivider">
+                    <hr class="divider"/>
+                    <span>CALCULATED RESULT</span>
+                </div>
+                <textarea readonly id="output-text-area"></textarea>
+            </div>
+        </div>
+ 
     </div>
-
-
-   
+    
+    <div class="bottom">
+        <h4 id="disclaimer">- anyone experienced at building websites and willing to improve the interface, contact me on discord Pandabot#5309</h4>
+    </div>
+    
 </body>
 <script src="javascript/index.js"></script>
 </html>

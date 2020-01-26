@@ -388,7 +388,9 @@ function distancesToPoint(planet, OMP){
     intersectionPoints = new Sphere(planet.OMPoints[helper3], OMP[helper3]).intersectSphereCircle(intersectionCircle);
 
 
-
+    if(typeof intersectionPoints == null){
+        return null;
+    }
     if(intersectionPoints.length > 1){
         return getCorrectPoint(intersectionPoints, planet.radius, planet.centre);
     } else {
@@ -415,7 +417,7 @@ function resultToString(planet, target, result){
     let distanceUntilTarget = result[6];
     distanceUntilTarget = Math.round(distanceUntilTarget * 100) / 100;
 
-    return planet.name + " -> " + target.name + "\n\nStartPoint: " + startPoint + "\nFly towards " + firstTarget + " until " + distanceUntilFirstTurn + " km away" + 
+    return planet.name + " -> " + target + "\n\nStartPoint: " + startPoint + "\nFly towards " + firstTarget + " until " + distanceUntilFirstTurn + " km away" + 
     "\nFly towards " + secondTarget + " until " + distanceUntilSecondTurn + " km away" + "\nFly towards " + thirdTarget + " until " + distanceUntilTarget + " km away";
 }
 
@@ -443,21 +445,33 @@ function findPlanet(n){
 function setUpData(){
     planets.push(new Planet("Cellin", 260, 380));
     planets.push(new Planet("Daymar", 295, 430));
-    planets.push(new Planet());
+    planets.push(new Planet("Yela", 313, 493));
+    planets.push(new Planet("Hurston", 1000, 0));
+    planets.push(new Planet("Arial", 344.494, 0));
+    planets.push(new Planet("Aberdeen", 274, 0));
+    planets.push(new Planet("Magda", 340.826, 0));
+    planets.push(new Planet("Ita", 325, 0));
+    planets.push(new Planet("Arccorp", 800, 0));
+    planets.push(new Planet("Lyria", 223, 0));
+    planets.push(new Planet("Wala", 283, 0));
+    planets.push(new Planet("Microtech", 1000, 1439));
+    planets.push(new Planet("Delamar", 75, 0));
 
 
-    var OMD = [];
-    //OMD.push({planetname : "Cellin", locationname : "temp1", OM1 :232.8, OM2 : 646.4, OM3 : 389.7, OM4 : 565.9, OM5 : 557.1, OM6 : 402.1});
-    //OMD.push({planetname : "Cellin", locationname : "temp2", OM1 :232.8, OM2 : 646.4, OM3 : 389.7, OM4 : 565.9, OM5 : 557.1, OM6 : 402.1});
-    //OMD.push("Cellin", "temp3", 641.0, 121.0, 449.8, 472.4, 460.1, 462.4);
-    console.log(OMD.length);
+
+
+
+    /*var OMD = [];
+    OMD.push({planetname : "Cellin", locationname : "temp1", OM1 :232.8, OM2 : 646.4, OM3 : 389.7, OM4 : 565.9, OM5 : 557.1, OM6 : 402.1});
+    OMD.push({planetname : "Cellin", locationname : "temp2", OM1 :232.8, OM2 : 646.4, OM3 : 389.7, OM4 : 565.9, OM5 : 557.1, OM6 : 402.1});
+    OMD.push("Cellin", "temp3", 641.0, 121.0, 449.8, 472.4, 460.1, 462.4);
 
     for(let i = 0; i < OMD.length; i++){
         let planet = findPlanet(OMD[i].planetname);
         let targetName = OMD[i].locationname;
         let distances = [OMD[i].OM1, OMD[i].OM2, OMD[i].OM3, OMD[i].OM4, OMD[i].OM5, OMD[i].OM6];
         planet.addLocation(targetName, distancesToPoint(planet, distances));
-    }
+    }*/
 }
 
 function addData(){
@@ -472,25 +486,28 @@ setUpData();
 var daymar_old = new Planet("daymar_old", 295, 464.624);
 var cellin_old = new Planet("cellin_old", 260, 410.024);
 var OMP_Javelin = [606.6, 487.9, 233.2, 742.7, 455.1, 631.6];
-var OMP_Freelancer = [620.7, 294.7, 251.0, 590.7, 364.2];
-var OMP_Starfarer = [379.6, 680.0, 296.6, 720.1, 604.0, 491.6];
-var OMP_Junkyard = [375.6, 682.5, 672.4, 393.4, 684.4, 372.4];
-var OMP_AbandonedOutpost = [359.4, 585.3, 258.9, 636.2, 400.7, 557.9];
 
 findPlanet("Daymar").addLocation("Javelin wreck", distancesToPoint(daymar_old, OMP_Javelin));
-//findPlanet("Cellin").addLocation("Freelancer wreck", distancesToPoint(cellin_old, OMP_Freelancer));
-findPlanet("Cellin").addLocation("Abandoned outpost", distancesToPoint(cellin_old, OMP_AbandonedOutpost));
-//findPlanet("Daymar").addLocation("Starfarer wreck", distancesToPoint(daymar_old, OMP_Starfarer));
-findPlanet("Daymar").addLocation("Junkyard", distancesToPoint(daymar_old, OMP_Junkyard));
 
-let selectPlanets = document.getElementById("planetsList");
+let selectPlanet = document.getElementById("planet-list");
+
 
 for(let i = 0; i < planets.length; i++){
     let opt = planets[i];
     let el = document.createElement("option");
     el.textContent = opt.name;
     el.value = opt.name;
-    selectPlanets.appendChild(el);
+    selectPlanet.appendChild(el);
+    
+}
+
+selectPlanet = document.getElementById("convert-planet-list");
+for(let i = 0; i < planets.length; i++){
+    let opt = planets[i];
+    let el = document.createElement("option");
+    el.textContent = opt.name;
+    el.value = opt.name;
+    selectPlanet.appendChild(el);
 }
 
 
@@ -502,45 +519,132 @@ function removeAllSelection(select){
     }
 }
 
-function onSelect(){
-    var selectPlanetsResult = findPlanet(selectPlanets.options[selectPlanets.selectedIndex].value);
-    let selectLocations = document.getElementById("locationList");
-    removeAllSelection(selectLocations);
 
-    for(let i = 0; i < selectPlanetsResult.locations.length; i++){
-        let opt = selectPlanetsResult.locations[i];
+function onSelect(){
+    let selectPlanets = document.getElementById("planet-list");
+    var selectPlanetResult = findPlanet(selectPlanets.options[selectPlanets.selectedIndex].value);
+    let selectLocation = document.getElementById("location-list");
+    removeAllSelection(selectLocation);
+
+    for(let i = 0; i < selectPlanetResult.locations.length; i++){
+        let opt = selectPlanetResult.locations[i];
         let el = document.createElement("option");
         el.textContent = opt.name;
         el.value = opt.name;
-        selectLocations.appendChild(el);
+        selectLocation.appendChild(el);
+    }
+    if(!checkbox.checked){
+        if(selectPlanetResult.locations.length == 0){ 
+             
+        } else {
+            let location = findPlanet(selectPlanets.options[selectPlanets.selectedIndex].value).getLocation(selectLocation.options[selectLocation.selectedIndex].value);
+            document.getElementById("coordx").value = Math.round(location.x * 100) / 100;
+            document.getElementById("coordy").value= Math.round(location.y * 100) / 100;
+            document.getElementById("coordz").value = Math.round(location.z * 100) / 100;
+        }
     }
 }
 
-function onClick(){
-    let selectLocations = document.getElementById("locationList");
-    let selectPlanets = document.getElementById("planetsList");
-
-    let planet = findPlanet(selectPlanets.options[selectPlanets.selectedIndex].value)
-    let target = planet.getLocation(selectLocations.options[selectLocations.selectedIndex].value);
-    var result = calculateRoute(target, planet);
-
-    document.getElementById("resultTextArea").value = resultToString(planet, target, result);
+function onLocationListChange(){
+    let checkbox = document.getElementById("checkbox");
+    if(!checkbox.checked){
+        let selectLocation = document.getElementById("location-list");
+        let selectPlanets = document.getElementById("planet-list");
+        let location = findPlanet(selectPlanets.options[selectPlanets.selectedIndex].value).getLocation(selectLocation.options[selectLocation.selectedIndex].value);
+        document.getElementById("coordx").value = Math.round(location.x * 100) / 100;
+        document.getElementById("coordy").value= Math.round(location.y * 100) / 100;
+        document.getElementById("coordz").value = Math.round(location.z * 100) / 100;
+    }
 }
 
-//console.log(selectPlanetsResult);
+function onClickCalculate(){
+    let selectPlanets = document.getElementById("planet-list");
+    let selectLocations = document.getElementById("location-list");
+    if(selectPlanets.value == ""){
+            document.getElementById("output-text-area").value = "Please select planet!";
+    } else {
+        if(!checkbox.checked){       
+            if(selectLocations.value == ""){
+                document.getElementById("output-text-area").value = "Please select location!";
+            } else{
 
+                let planet = findPlanet(selectPlanets.options[selectPlanets.selectedIndex].value)
+                let target = planet.getLocation(selectLocations.options[selectLocations.selectedIndex].value);
+                let result = calculateRoute(target, planet);
 
-//var point4 = findPlanet("Daymar").getLocation("Javelin wreck");
-//distancesToPoint(daymar_old, OMP);
+                document.getElementById("output-text-area").value = resultToString(planet, target.name, result);
+            }
+        } else {
+            if(document.getElementById("coordx").value == "" || document.getElementById("coordy").value == "" || document.getElementById("coordx").value == ""){
+                document.getElementById("output-text-area").value = "Please enter coordinates!";
+            } else {
+                let planet = findPlanet(selectPlanets.options[selectPlanets.selectedIndex].value)
+                let target = new Point(document.getElementById("coordx").value, document.getElementById("coordy").value, document.getElementById("coordz").value);
+                let result = calculateRoute(target, planet);
 
-//console.log(point4)
+                if(typeof result[2] == "undefined"){
+                    document.getElementById("output-text-area").value = "Route to that coordinate not found!";
+                } else {
+                    document.getElementById("output-text-area").value = resultToString(planet, "Target point", result);
+                }
+            }
+        }
+    }
+}
 
+function onClickConvert(){
+    
+    if(document.getElementById("convert-planet-list").value == ""){
+        document.getElementById("output-text-area").value = "Please select a planet!";
+    } else {
+        let planet = findPlanet(document.getElementById("convert-planet-list").value);
+        let om1 = document.getElementById("om1").value;
+        let om2 = document.getElementById("om2").value;
+        let om3 = document.getElementById("om3").value;
+        let om4 = document.getElementById("om4").value;
+        let om5 = document.getElementById("om5").value;
+        let om6 = document.getElementById("om6").value;
+        if(om1 == "" || om2 == "" || om3 == "" || om4 == "" || om5 == "" || om6 == ""){
+            document.getElementById("output-text-area").value = "Please enter distances!";
+        } else{ 
+            let omd = [om1, om2, om3, om4, om5, om6];
 
+            let target = distancesToPoint(planet, omd);
 
-//var result = calculateRoute(point4, findPlanet("Daymar"));
+            if(typeof target == "undefined"){
+                document.getElementById("output-text-area").value = "No point at those distances!";
+            } else {
+                document.getElementById("output-text-area").value = "Location coordinate:\n\n" + Math.round(target.x * 100) / 100 + " | "  + Math.round(target.y * 100) / 100 + " | " + Math.round(target.z * 100) / 100;
+            }
+        }
+    }
+}
 
-//console.log(resultToString(result));
+function checkBoxChange(){
+    
+    let checkbox = document.getElementById("checkbox");
+    if(checkbox.checked){
+        document.getElementById("coordx").readOnly = false;
+        document.getElementById("coordy").readOnly = false;
+        document.getElementById("coordz").readOnly = false;
 
+        document.getElementById("coordx").value = "";
+        document.getElementById("coordy").value = "";
+        document.getElementById("coordz").value = "";
+    } else{
+        document.getElementById("coordx").readOnly = true;
+        document.getElementById("coordy").readOnly = true;
+        document.getElementById("coordz").readOnly = true;
 
+        let selectLocation = document.getElementById("location-list");
+        let selectPlanets = document.getElementById("planet-list");
+        if(!selectPlanets.value == "" && !selectLocation == ""){
+            let location = findPlanet(selectPlanets.options[selectPlanets.selectedIndex].value).getLocation(selectLocation.options[selectLocation.selectedIndex].value);
+            document.getElementById("coordx").value = Math.round(location.x * 100) / 100;
+            document.getElementById("coordy").value= Math.round(location.y * 100) / 100;
+            document.getElementById("coordz").value = Math.round(location.z * 100) / 100;
+        }
+    }
+    
+}
 
-//console.log(distancesToPoint(new Planet("cellin", 260, 410), OMP).printCoord());

@@ -446,7 +446,7 @@ function setUpData(){
     planets.push(new Planet("Cellin", 260, 380));
     planets.push(new Planet("Daymar", 295, 430));
     planets.push(new Planet("Yela", 313, 454));
-    planets.push(new Planet("Hurston", 1000, 1575)); //Update
+    planets.push(new Planet("Hurston", 1000, 1438)); //Update
     planets.push(new Planet("Arial", 344.494, 501));
     planets.push(new Planet("Aberdeen", 274, 402.7));
     planets.push(new Planet("Magda", 340.826, 494.8));
@@ -460,6 +460,19 @@ function setUpData(){
 
     var OMD = [];
     OMD.push({planetname: "Yela", locationname: "Stash house", OM1: 318.2, OM2: 714.1, OM3: 610.9, OM4: 487.8, OM5: 702.1, OM6: 343.8});
+    OMD.push({planetname: "Yela", locationname: "Jumptown", OM1: 699.6, OM2: 349.3, OM3: 541.0, OM4: 564.5, OM5: 723.8, OM6: 295.8});
+    OMD.push({planetname: "Daymar", locationname: "Stash house", OM1: 496.2, OM2: 547.1, OM3: 143.2, OM4: 724.6, OM5: 539.8, OM6: 504.1});
+    OMD.push({planetname: "Wala", locationname: "Samson & son's salvage center", OM1: 500.4, OM2: 500.6, OM3: 135.4, OM4: 694.7, OM5: 524.9, OM6: 474.8});
+    OMD.push({planetname: "Daymar", locationname: "Brio's braker yard", OM1: 350.1, OM2: 651, OM3: 541.2, OM4: 367.7, OM5: 652.5, OM6: 347.3});
+    OMD.push({planetname: "Hurston", locationname: "Reclamation & disposal Orinth", OM1: 1058, OM2: 2241, OM3: 2225, OM4: 1091, OM5: 1447, OM6: 2011});
+    OMD.push({planetname: "Lyria", locationname: "The orphanage", OM1: 183, OM2: 531.3, OM3: 313.6, OM4: 466.3, OM5: 457, OM6: 326.9});
+    OMD.push({planetname: "Lyria", locationname: "Paradise cove", OM1: 441.6, OM2: 347.3, OM3: 166.4, OM4: 436.6, OM5: 463.7, OM6: 317.2});
+    OMD.push({planetname: "Cellin", locationname: "Stash house", OM1: 283.1, OM2: 588.5, OM3: 587.3, OM4: 285.6, OM5: 381.4, OM6: 530.1});
+    OMD.push({planetname: "Aberdeen", locationname: "Cave 1", OM1: 440, OM2: 531, OM3: 667.4, OM4: 173.5, OM5: 418.1, OM6: 548.4});
+
+    //OMD.push({planetname: , locationname: , OM1: , OM2: , OM3: , OM4: , OM5: , OM6: });
+
+    // yela jump town 699.6, 349.3, 541.0, 564.5, 723.8, 295.8
 
     var daymar_old = new Planet("daymar_old", 295, 464.624);
     var OMP_Javelin = [606.6, 487.9, 233.2, 742.7, 455.1, 631.6];
@@ -562,7 +575,7 @@ function onClickCalculate(){
     if(selectPlanets.value == ""){
             document.getElementById("output-text-area").value = "Please select planet!";
     } else if(selectPlanets.value == "Hurston" || selectPlanets.value == "Arccorp"){
-            document.getElementById("output-text-area").value = "Hurston and Arccorp are currently bugged, so the OM's altitude cant be measured. Please choose a different planet!";
+            document.getElementById("output-text-area").value = "Hurston and Arccorp are currently bugged, the OM's can't be seen, so the navigation system won't work. Please choose a different planet!";
     } else {
         console.log("test");
         if(!checkbox.checked){       
@@ -599,7 +612,7 @@ function onClickConvert(){
     if(document.getElementById("convert-planet-list").value == ""){
         document.getElementById("output-text-area").value = "Please select a planet!";
     } else if(document.getElementById("convert-planet-list").value == "Hurston" || document.getElementById("convert-planet-list").value == "Arccorp"){
-        document.getElementById("output-text-area").value = "Hurston and Arccorp are currently bugged, so the OM's altitude cant be measured. Please choose a different planet!";
+        document.getElementById("output-text-area").value = "Hurston and Arccorp are currently bugged, the OM's can't be seen, so the navigation system won't work. Please choose a different planet!";
     } else {
         let planet = findPlanet(document.getElementById("convert-planet-list").value);
         let om1 = document.getElementById("om1").value;

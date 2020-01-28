@@ -262,17 +262,15 @@ function sortArrayByDistance(a, t){
     //TODO
 }
 
-function getCorrectPoint(a, r, c){
-    var temp = 100000000;
+function getCorrectPoint(array, distance, helper4){
+    var temp = Math.abs(array[0].distance(helper4) - distance);
     var result;
-    for(let i = 0; i < a.length; i++){
-        if(Math.abs(a[i].distance(c)-r)<temp){
-            temp = Math.abs(a[i].distance(c)-r);
-            result = a[i];
-        } 
-          
+    if(Math.abs(array[1].distance(helper4) - distance) <temp){
+        return array[1];
+    } else {
+        return array[0];
     }
-    return result;
+
 }
 
 function calculateRoute(target, planet){
@@ -356,10 +354,12 @@ function distancesToPoint(planet, OMP){
     var helper1d = OMP[0];
     var helper2d = 100000000;
     var helper3d = 100000000;
+    var helper4d = 100000000;
 
     var helper1 = 0;
     var helper2 = 0;
     var helper3 = 0;
+    var helper4 = 0;
 
 
     for(let i = 0; i < OMP.length; i++){
@@ -383,6 +383,13 @@ function distancesToPoint(planet, OMP){
         }
     }
 
+    for(let k = 0; k < OMP.length; k++){
+        if(OMP[k] > helper3d && OMP[k] < helper4d){
+            helper4d = OMP[k];
+            helper4 = k;
+        }
+    }
+
 
     intersectionCircle = new Sphere(planet.OMPoints[helper1], OMP[helper1]).intersectSpheres(new Sphere(planet.OMPoints[helper2], OMP[helper2]));
     intersectionPoints = new Sphere(planet.OMPoints[helper3], OMP[helper3]).intersectSphereCircle(intersectionCircle);
@@ -392,7 +399,7 @@ function distancesToPoint(planet, OMP){
         return null;
     }
     if(intersectionPoints.length > 1){
-        return getCorrectPoint(intersectionPoints, planet.radius, planet.centre);
+        return getCorrectPoint(intersectionPoints, OMP[helper4], planet.OMPoints[helper4]);
     } else {
         return intersectionPoints[0];
     }
@@ -444,7 +451,7 @@ function findPlanet(n){
 
 function setUpData(){
     planets.push(new Planet("Cellin", 260, 380));
-    planets.push(new Planet("Daymar", 295, 430));
+    planets.push(new Planet("Daymar", 295, 430.9));
     planets.push(new Planet("Yela", 313, 454));
     planets.push(new Planet("Hurston", 1000, 1438)); //Update
     planets.push(new Planet("Arial", 344.494, 501));
@@ -469,15 +476,9 @@ function setUpData(){
     OMD.push({planetname: "Lyria", locationname: "Paradise cove", OM1: 441.6, OM2: 347.3, OM3: 166.4, OM4: 436.6, OM5: 463.7, OM6: 317.2});
     OMD.push({planetname: "Cellin", locationname: "Stash house", OM1: 283.1, OM2: 588.5, OM3: 587.3, OM4: 285.6, OM5: 381.4, OM6: 530.1});
     OMD.push({planetname: "Aberdeen", locationname: "Cave 1", OM1: 440, OM2: 531, OM3: 667.4, OM4: 173.5, OM5: 418.1, OM6: 548.4});
+    OMD.push({planetname: "Daymar", locationname: "Javelin wreck", OM1: 577.2, OM2: 461.1, OM3: 205.3, OM4: 709.7, OM5: 428.9, OM6: 601.5});
 
     //OMD.push({planetname: , locationname: , OM1: , OM2: , OM3: , OM4: , OM5: , OM6: });
-
-    // yela jump town 699.6, 349.3, 541.0, 564.5, 723.8, 295.8
-
-    var daymar_old = new Planet("daymar_old", 295, 464.624);
-    var OMP_Javelin = [606.6, 487.9, 233.2, 742.7, 455.1, 631.6];
-
-    findPlanet("Daymar").addLocation("Javelin wreck", distancesToPoint(daymar_old, OMP_Javelin));
 
 
     for(let i = 0; i < OMD.length; i++){

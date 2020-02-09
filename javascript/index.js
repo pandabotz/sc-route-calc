@@ -309,10 +309,11 @@ function calculateRoute(target, planet){ //calculate route bases on target and p
 
         //the second turn is where the helper2 to target ray intersects the startpoint, helper1 and helper3 plane
         secondTurn = new Plane(startPoint, startPoint.vectorTo(helper1).crossProduct(startPoint.vectorTo(helper3))).intersectPlaneLine(helper2, helper2.vectorTo(target));
-
+        
         //the first turn is where the startpoint to helper1 line intersects the helper3 to second turn ray
         firstTurn = startPoint.intersectLines(startPoint.vectorTo(helper1), helper3, helper3.vectorTo(secondTurn));
-
+        console.log(secondTurn);
+        console.log(firstTurn);
         //calculate distances
         untilFirstTurn = firstTurn.distance(helper1);
         untilSecondTurn = helper3.distance(secondTurn);
@@ -515,7 +516,7 @@ function setUpData(){
     //planet list
     planets.push(new Planet("Cellin", 260, 380));
     planets.push(new Planet("Daymar", 295, 430.9));
-    planets.push(new Planet("Yela", 313, 454));
+    planets.push(new Planet("Yela", 313, 455.468));
     planets.push(new Planet("Hurston", 1000, 1438)); //TODO update to proper value
     planets.push(new Planet("Arial", 344.494, 501));
     planets.push(new Planet("Aberdeen", 274, 402.7));
@@ -534,7 +535,7 @@ function setUpData(){
     OMD.push({planetname: "Yela", locationname: "Jumptown", OM1: 699.6, OM2: 349.3, OM3: 541.0, OM4: 564.5, OM5: 723.8, OM6: 295.8});
     OMD.push({planetname: "Daymar", locationname: "Stash house", OM1: 496.2, OM2: 547.1, OM3: 143.2, OM4: 724.6, OM5: 539.8, OM6: 504.1});
     OMD.push({planetname: "Wala", locationname: "Samson & son's salvage center", OM1: 500.4, OM2: 500.6, OM3: 135.4, OM4: 694.7, OM5: 524.9, OM6: 474.8});
-    OMD.push({planetname: "Daymar", locationname: "Brio's braker yard", OM1: 350.1, OM2: 651, OM3: 541.2, OM4: 367.7, OM5: 652.5, OM6: 347.3});
+    OMD.push({planetname: "Daymar", locationname: "Brio's braker yard", OM1: 350.1, OM2: 651, OM3: 641.2, OM4: 367.7, OM5: 652.5, OM6: 347.3});
     OMD.push({planetname: "Hurston", locationname: "Reclamation & disposal Orinth", OM1: 1058, OM2: 2241, OM3: 2225, OM4: 1091, OM5: 1447, OM6: 2011});
     OMD.push({planetname: "Lyria", locationname: "The orphanage", OM1: 183, OM2: 531.3, OM3: 313.6, OM4: 466.3, OM5: 457, OM6: 326.9});
     OMD.push({planetname: "Lyria", locationname: "Paradise cove", OM1: 441.6, OM2: 347.3, OM3: 166.4, OM4: 436.6, OM5: 463.7, OM6: 317.2});
@@ -572,6 +573,7 @@ function setUpData(){
         el.value = opt.name;
         selectPlanet.appendChild(el);
     }
+
 }
 
 

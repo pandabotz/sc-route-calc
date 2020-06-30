@@ -23,13 +23,13 @@
                 </div>
                 <div class="lable-input-container">
                     <label for="planet-list">Planet</label>
-                    <select class="list-selection" id="planet-list"  onchange="onSelect()">
+                    <select class="list-selection" id="planet-list">
                         <option selected disabled></option selected disabled>
                     </select>
                 </div>
                 <div class="lable-input-container">
                     <label for="location-list">Location</label>
-                    <select class="list-selection" id="location-list" onchange="onLocationListChange()">
+                    <select class="list-selection" id="location-list">
                         <option selected disabled></option selected disabled>
                     </select>
                 </div>
@@ -41,7 +41,7 @@
                     <label>Jump drive</label>
                     <input class="text-input" type="text" placeholder="-- not working yet --" disabled>
                 </div>
-                <button class="button" id="calculate-button" onclick="onClickCalculate()">Calculate</button>
+                <button class="button" id="calculate-button">Calculate</button>
                 <div class="coordinates">
                     <div class="lable-input-container" id="coord-calc-container">
                         <label>Coordinates</label>
@@ -51,7 +51,7 @@
                     <input class="coord-input" id="coordz" type="number"readonly>
                     
                     <div class="lable-input-container" id="checkbox-container">   
-                        <input class="checkbox" type="checkbox" id="checkbox" onchange="checkBoxChange()">
+                        <input class="checkbox" type="checkbox" id="checkbox">
                         <label>use coordinates</label>
                     </div>
                 </div>
@@ -83,7 +83,7 @@
                             <option selected disabled></option selected disabled>
                         </select>
                     </div>
-                    <button class="button" id="convert-button" onclick="onClickConvert()">Convert</button>
+                    <button class="button" id="convert-button">Convert</button>
                 </div>
                 
             </div>
@@ -104,5 +104,7 @@
     </div>
     
 </body>
-<script src="javascript/index.js"></script>
+<script lang="javascript" src="dist/xlsx.full.min.js"></script>
+<script type="module" src="javascript/index.js"></script>
+
 </html>

@@ -1,423 +1,8 @@
 //Route calculation javascript
 
-/*
+import { Point, Plane, Sphere, Circle } from './vectorMath.js';
 
-calculation helper classes/functions
-
-
-*/
-
-class Point{ //vector used for calculations
-    constructor(x,y,z){
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
-    xcord(){
-        return this.x;
-    }
-
-    ycord(){
-        return this.y;
-    }
-
-    zcord(){
-        return this.z;
-    }
-
-    sub(p) { //vector subtraction
-        return new Point(this.x - p.x, this.y - p.y, this.z - p.z);
-    }
-
-    add(p){ //vector addition
-        return new Point(this.x + p.x, this.y + p.y, this.z + p.z);
-    }
-
-    invert(){ //invert vector
-        return new Point(-this.x, -this.y, -this.z);
-    }
-
-    distance(p){ //distance between two points
-        return Math.sqrt(Math.pow(this.x - p.x, 2) + Math.pow(this.y - p.y, 2) + Math.pow(this.z - p.z, 2));
-    }
-
-    magnitude(){ //length of vector
-        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
-    }
-
-    normalize(){ //set vector length to 1
-        var length = Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2));
-        return new Point(this.x / length, this.y / length, this.z / length);
-    }
-
-    scale(s){ //scale the vector by scalar
-        return new Point(this.x * s, this.y * s, this.z * s);
-    }
-    
-    crossProduct(p){ //crossproduct of two vectors
-        return new Point(this.y * p.z - p.y * this.z, this.z * p.x - p.z * this.x, this.x * p.y - p.x * this.y);
-    }
-    
-    vectorTo(p){ //vector from one point to the other
-        return this.sub(p).invert();
-    }
-
-    scalarProduct(p){ //dotproduct of two vectors
-        return (this.x * p.x + this.y * p.y + this.z * p.z);
-    }
-
-    bArePointsEqual(p){ //check if two vectors are equal
-        if(this.x == p.x){
-            if(this.y == p.y){
-                if(this.z == p.z){
-                    return true;
-                }
-            }
-        } 
-        return false;
-    }
-
-    intersectLines(v1, p, v2){ //check if two lines intersect and return intersection point
-        var vector1 = v1.normalize(); 
-        var vector2 = v2.normalize();
-        var scalar = (p.sub(this).crossProduct(vector2)).magnitude() / (vector1.crossProduct(vector2)).magnitude();
-        
-        let temp = this;
-        return this.add(vector1.scale(scalar));
-    }
-}
-
-
-
-
-
-
-class Plane{ //plane in 3d space
-    constructor(p, n){
-        this.point = p;
-        this.normal = n;
-
-    }
-
-    intersectPlaneLine(startpoint, vector){ //return intersection point between two vectors 
-        var difference = startpoint.sub(this.point);
-        var prod1 = difference.scalarProduct(this.normal);
-        var prod2 = vector.scalarProduct(this.normal);
-        var prod3 = prod1 / prod2;
-        return startpoint.sub(vector.scale(prod3));
-    }
-}
-
-
-
-
-
-
-class Circle{ //circle in 3d space
-    constructor(c, r, n){
-        this.centre = c;
-        this.radius = r;
-        this.normal = n;
-    }
-
-    bIsPointInCircle(p){ //check if point is inside the cylinder with the base of the circle
-        if(new Plane(this.centre, this.normal).intersectPlaneLine(p, this.normal).distance(this.centre) <= this.radius){
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    intersectCircles(c){ //return the intersection between 2 circles in the same plane in 3d space
-        var distance = this.centre.distance(c.centre);
-        var t = this.centre.sub(c.centre).crossProduct(this.normal).normalize();
-        if(this.radius + c.radius < distance){
-            return [];
-        } else if(this.radius + c.radius == distance){
-            return [this.centre.vectorTo(c.centre).normalize().scale(this.radius)];
-        } else {
-            var h = 0.5 + (Math.pow(this.radius, 2) - Math.pow(c.radius, 2)) / (2 * Math.pow(this.centre.distance(c.centre), 2));
-            var c_i = this.centre.add(c.centre.sub(this.centre).scale(h));
-            var r_i = Math.sqrt(Math.pow(this.radius, 2) - Math.pow(h, 2) * Math.pow(this.centre.distance(c.centre), 2));
-            return [c_i.sub(t.scale(r_i)), c_i.add(t.scale(r_i))];
-        }
-    }
-}
-
-
-
-
-
-
-class Sphere{  //sphere in 3d space
-    constructor(c, r){
-        this.centre = c;
-        this.radius = r;
-    }
-
-    intersectSpheres(s){ //return the intersection circle of 2 spheres
-        let distance = this.centre.distance(s.centre);
-        if(this.radius + s.radius < distance){
-            return null;
-        } else if (this.radius + s.radius == distance){
-            return null;
-        } else {
-            distance = this.centre.distance(s.centre);
-            var h = 0.5 + (Math.pow(this.radius, 2) - Math.pow(s.radius, 2)) / (2 * Math.pow(distance, 2));
-            var c_i = this.centre.add(s.centre.sub(this.centre).scale(h));
-            var r_i = Math.sqrt(Math.pow(this.radius, 2) - Math.pow(h, 2) * Math.pow(distance, 2));
-
-            return new Circle (c_i, r_i, this.centre.vectorTo(s.centre).normalize());
-        }
-    }
-
-    intersectSpherePlane(p){ //return the intersection circle of a sphere and a plane
-        var distance = p.normal.normalize().scalarProduct(p.point.sub(this.centre));
-        var new_centre;
-        var new_radius;
-        if(Math.abs(distance) > this.radius){
-            return null;
-        } else {
-            var new_centre = this.centre.add(p.normal.normalize().invert().scale(distance));
-            if(Math.abs(distance == this.radius)){
-                return null;
-            } else {
-                var new_radius = Math.sqrt(Math.pow(this.radius, 2) - Math.pow(distance, 2));
-                return new Circle(new_centre, new_radius, p.normal);
-            }
-        }
-    }
-
-    intersectSphereCircle(c){ //return the intersectionpoints of a sphere and a circle
-        var distance = c.normal.normalize().scalarProduct(this.centre.sub(c.centre));
-        var new_centre;
-        var new_radius;
-        if(Math.abs(distance > this.radius)){
-            return null;
-        } else {
-            var new_centre = this.centre.add(c.normal.normalize().invert().scale(distance));
-            if(Math.abs(distance == this.radius)){
-                return [new_centre];
-            } else {
-                var new_radius = Math.sqrt(Math.pow(this.radius, 2) - Math.pow(distance, 2));
-                return c.intersectCircles(new Circle(new_centre, new_radius, c.normal));
-            }
-        }
-    }
-}
-
-
-
-
-
-
-/*
-
-calculation functions
-
-
-*/
-
-
-
-
-
-
-function sortArrayByDistance(a, t){
-    //TODO
-}
-
-
-
-
-
-
-function getCorrectPoint(array, distance, helper4){ // return point with distance to helper4 closest to reported distance to helper4
-    var temp = Math.abs(array[0].distance(helper4) - distance);
-    if(Math.abs(array[1].distance(helper4) - distance) <temp){
-        return array[1];
-    } else {
-        return array[0];
-    }
-
-}
-
-
-
-
-
-
-function calculateRoute(target, planet){ //calculate route bases on target and planet
-
-    //find the 4 closest orbital markers to the target
-    //startpoint closest
-    //helper1 second closest
-    //etc
-    //will be reworked TODO
-    let OMPoints = planet.OMPoints;
-
-    var startPoint;
-    var helper1;
-    var helper2;
-    var helper3;
-
-    var startPointIndex;
-    var helper1Index;
-    var helper2Index;
-    var helper3Index;
-
-    var firstTurn;
-    var secondTurn;
-
-    var untilFirstTurn;
-    var untilSecondTurn;
-    var untilTarget;
-
-    startPoint = OMPoints[0];
-    startPointIndex = 0;
-    for(let i = 0; i < OMPoints.length; i++){
-        if(OMPoints[i].distance(target) < startPoint.distance(target)){
-            startPoint = OMPoints[i];
-            startPointIndex = i;
-        }
-    }
-    helper1 = new Point(10000, 10000, 10000);
-    for(let i = 0; i < OMPoints.length; i++){
-        if(OMPoints[i].distance(target) > startPoint.distance(target) && OMPoints[i].distance(target) < helper1.distance(target)){
-            helper1 = OMPoints[i];
-            helper1Index = i;
-        }
-    }
-    helper2 = new Point(10000, 10000, 10000);
-    for(let i = 0; i < OMPoints.length; i++){
-        if(OMPoints[i].distance(target) > helper1.distance(target) && OMPoints[i].distance(target) < helper2.distance(target)){
-            helper2 = OMPoints[i];
-            helper2Index = i;
-        }
-    }
-    helper3 = new Point(10000, 10000, 10000);
-    for(let i = 0; i < OMPoints.length; i++){
-        if(OMPoints[i].distance(target) > helper2.distance(target) && OMPoints[i].distance(target) < helper3.distance(target)){
-            helper3 = OMPoints[i];
-            helper3Index = i;
-        }
-    }
-
-    //first we check if the point is on the intersection circle of the planet sphere and the startpoint, helper1 and helper 2 plane
-    if (planet.intersectSpherePlane(new Plane(startPoint, startPoint.vectorTo(helper1).crossProduct(startPoint.vectorTo(helper2)))).bIsPointInCircle(target)){
-
-        //the second turn is where the helper2 to target ray intersects the startpoint, helper1 and helper3 plane
-        secondTurn = new Plane(startPoint, startPoint.vectorTo(helper1).crossProduct(startPoint.vectorTo(helper3))).intersectPlaneLine(helper2, helper2.vectorTo(target));
-        
-        //the first turn is where the startpoint to helper1 line intersects the helper3 to second turn ray
-        firstTurn = startPoint.intersectLines(startPoint.vectorTo(helper1), helper3, helper3.vectorTo(secondTurn));
-        console.log(secondTurn);
-        console.log(firstTurn);
-        //calculate distances
-        untilFirstTurn = firstTurn.distance(helper1);
-        untilSecondTurn = helper3.distance(secondTurn);
-        untilTarget = target.distance(helper2);
-
-        //return points and distances for output
-        return [startPointIndex, helper1Index, helper3Index, helper2Index, untilFirstTurn, untilSecondTurn, untilTarget];
-
-    } else {
-
-        //the second turn is where the planet centre to target ray intersects the startpoint, helper1 and helper2 plane
-        secondTurn = new Plane(startPoint, startPoint.vectorTo(helper1).crossProduct(startPoint.vectorTo(helper2))).intersectPlaneLine(planet.centre, planet.centre.vectorTo(target));
-
-        //first turn is where the startpoint to helper1 line intersects the helper2 to second turn ray
-        firstTurn = startPoint.intersectLines(startPoint.vectorTo(helper1), helper2, helper2.vectorTo(secondTurn));
-
-        //calculate distances
-        untilFirstTurn = firstTurn.distance(helper1);
-        untilSecondTurn = secondTurn.distance(helper2);
-        untilTarget = target.distance(planet.centre);
-
-        //return points and distances for output
-        return [startPointIndex, helper1Index, helper2Index, 7, untilFirstTurn, untilSecondTurn, untilTarget];
-
-    }
-}
-
-
-
-
-
-
-function distancesToPoint(planet, OMP){  //convert distances to orbital markers to coordinate
-    
-    //find the 4 closest orbital markers to the target
-    //helper1 closest
-    //helper2 second closest
-    //etc
-    //will be reworked TODO
-
-    var intersectionCircle;
-    var intersectionPoints;
-
-    var helper1d = OMP[0];
-    var helper2d = 100000000;
-    var helper3d = 100000000;
-    var helper4d = 100000000;
-
-    var helper1 = 0;
-    var helper2 = 0;
-    var helper3 = 0;
-    var helper4 = 0;
-
-
-    for(let i = 0; i < OMP.length; i++){
-        if(OMP[i] < helper1d){
-            helper1d = OMP[i];
-            helper1 = i;
-        } 
-    }
-
-    for(let j = 0; j < OMP.length; j++){
-        if(OMP[j] > helper1d && OMP[j] < helper2d){
-            helper2d = OMP[j];
-            helper2 = j;
-        }
-    }
-
-    for(let k = 0; k < OMP.length; k++){
-        if(OMP[k] > helper2d && OMP[k] < helper3d){
-            helper3d = OMP[k];
-            helper3 = k;
-        }
-    }
-
-    for(let k = 0; k < OMP.length; k++){
-        if(OMP[k] > helper3d && OMP[k] < helper4d){
-            helper4d = OMP[k];
-            helper4 = k;
-        }
-    }
-
-
-    //first we get the intersection circle of the helper1 sphere and the helper2 sphere
-    intersectionCircle = new Sphere(planet.OMPoints[helper1], OMP[helper1]).intersectSpheres(new Sphere(planet.OMPoints[helper2], OMP[helper2]));
-
-    //next we get the intersection points of the previous circle and the helper3 sphere
-    intersectionPoints = new Sphere(planet.OMPoints[helper3], OMP[helper3]).intersectSphereCircle(intersectionCircle);
-
-
-    //we check if 2 or 1 point got returned
-    if(typeof intersectionPoints == null){
-        return null;
-    }
-    if(intersectionPoints.length > 1){
-
-        //if it's 2 points return the points where the distance to helper4 is closest to the recorded distance to helper4
-        return getCorrectPoint(intersectionPoints, OMP[helper4], planet.OMPoints[helper4]);
-    } else {
-        return intersectionPoints[0];
-    }
-}
-
-
+import { calculateRoute, getCorrectPoint, distancesToPoint} from './routeCalculation.js';
 
 
 
@@ -431,26 +16,12 @@ setup data and related helper classes/function
 
 
 
-
-
-planets = [];
-
-
-
-
-
-
 class Location extends Point{ //added a location name to point
     constructor(n, x, y, z){
         super(x, y, z);
         this.name = n;
     }
 }
-
-
-
-
-
 
 class Planet extends Sphere{ //added name and Orbital Markers
     constructor(n, r, OMD){
@@ -492,10 +63,8 @@ class Planet extends Sphere{ //added name and Orbital Markers
     }
 }
 
-
-
-
-
+// planet array and its helper functions
+var planets = [];
 
 function findPlanet(n){ //find planet with specific name
     for(let i = 0; i < planets.length; i++){
@@ -507,15 +76,11 @@ function findPlanet(n){ //find planet with specific name
 
 
 
-
-
-
-
 function setUpData(){ 
 
     //planet list
     planets.push(new Planet("Cellin", 260, 380));
-    planets.push(new Planet("Daymar", 295, 430.9));
+    planets.push(new Planet("Daymar", 295, 430));
     planets.push(new Planet("Yela", 313, 455.468));
     planets.push(new Planet("Hurston", 1000, 1438)); //TODO update to proper value
     planets.push(new Planet("Arial", 344.494, 501));
@@ -542,6 +107,7 @@ function setUpData(){
     OMD.push({planetname: "Cellin", locationname: "Stash house", OM1: 283.1, OM2: 588.5, OM3: 587.3, OM4: 285.6, OM5: 381.4, OM6: 530.1});
     OMD.push({planetname: "Aberdeen", locationname: "Cave 1", OM1: 440, OM2: 531, OM3: 667.4, OM4: 173.5, OM5: 418.1, OM6: 548.4});
     OMD.push({planetname: "Daymar", locationname: "Javelin wreck", OM1: 577.2, OM2: 461.1, OM3: 205.3, OM4: 709.7, OM5: 428.9, OM6: 601.5});
+    OMD.push({planetname: "Yela", locationname: "Benny Henge", OM1: 784.0, OM2: 785.1, OM3: 697.9, OM4: 862.6, OM5: 1087.7, OM6: 219.0});
 
     //OMD.push({planetname: , locationname: , OM1: , OM2: , OM3: , OM4: , OM5: , OM6: }); ---- form used above
 
@@ -577,13 +143,11 @@ function setUpData(){
 }
 
 
-
-
-
-
 setUpData();
 
-
+function testExcel(){
+    
+}
 
 
 
@@ -628,7 +192,7 @@ function resultToString(planet, target, result){ //convert the returned data to 
 
 
 function removeAllSelection(select){
-    for(i = select.options.length - 1 ; i >= 0 ; i--)
+    for(var i = select.options.length - 1 ; i >= 0 ; i--)
     {
         select.remove(i);
     }
@@ -637,7 +201,11 @@ function removeAllSelection(select){
 
 
 
-
+document.getElementById("planet-list").addEventListener("change", onSelect);
+document.getElementById("location-list").addEventListener("change", onLocationListChange);
+document.getElementById("calculate-button").addEventListener("click", onClickCalculate);
+document.getElementById("checkbox").addEventListener("change", checkBoxChange);
+document.getElementById("convert-button").addEventListener("click", onClickConvert);
 
 function onSelect(){
     let selectPlanets = document.getElementById("planet-list");
